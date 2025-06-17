@@ -16,7 +16,6 @@ const CardSetProducts: React.FC<CardSetProductsProps>  = ({productos}) => {
 				id={CardProducto.id}
 				nombre={CardProducto.nombre}
 				precio={CardProducto.precio}
-				stock={CardProducto.stock}
 				categoria={CardProducto.categoria}
 			/>
 			))}

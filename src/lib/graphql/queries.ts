@@ -1,5 +1,23 @@
 import { gql } from '@apollo/client';
 
+// Query de introspección para verificar el schema
+export const INTROSPECT_SCHEMA = gql`
+  query IntrospectSchema {
+    __schema {
+      types {
+        name
+        fields {
+          name
+          type {
+            name
+            kind
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Query para obtener todos los productos
 export const GET_PRODUCTOS = gql`
   query GetProductos {
@@ -7,7 +25,6 @@ export const GET_PRODUCTOS = gql`
       id
       nombre
       precio
-      stock
       categoria
     }
   }
@@ -20,7 +37,6 @@ export const GET_PRODUCTO = gql`
       id
       nombre
       precio
-      stock
       categoria
     }
   }
@@ -31,13 +47,6 @@ export const GET_COMPRAS = gql`
   query GetCompras {
     compras {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -47,13 +56,6 @@ export const GET_COMPRA = gql`
   query GetCompra($id: ID!) {
     compra(id: $id) {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -63,13 +65,6 @@ export const GET_VENTAS = gql`
   query GetVentas {
     ventas {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -79,13 +74,6 @@ export const GET_VENTA = gql`
   query GetVenta($id: ID!) {
     venta(id: $id) {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -97,7 +85,10 @@ export const GET_USUARIOS = gql`
       id
       nombreusuario
       contrasenia
-      rol
+      rol {
+        id
+        nombre
+      }
     }
   }
 `;
@@ -109,7 +100,10 @@ export const GET_USUARIO = gql`
       id
       nombreusuario
       contrasenia
-      rol
+      rol {
+        id
+        nombre
+      }
     }
   }
 `;
@@ -119,13 +113,6 @@ export const GET_VENTAS_DE_HOY = gql`
   query GetVentasDeHoy {
     ventasDeHoy {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -135,13 +122,6 @@ export const GET_VENTAS_ULTIMA_SEMANA = gql`
   query GetVentasUltimaSemana {
     ventasUltimaSemana {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -151,13 +131,6 @@ export const GET_VENTAS_ULTIMO_MES = gql`
   query GetVentasUltimoMes {
     ventasUltimoMes {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -169,7 +142,6 @@ export const GET_TOP_PRODUCTOS_MAS_VENDIDOS = gql`
       id
       nombre
       precio
-      stock
       categoria
     }
   }

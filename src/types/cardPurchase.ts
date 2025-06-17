@@ -1,12 +1,13 @@
 export interface IPurchases {
     id: number;
-    fecha: string;
-    total: number;
-    productos: {
+    fecha?: string;
+    total?: number;
+    proveedor?: string;
+    productos?: {
         id: number;
         nombre: string;
         precio: number;
-        stock: number;
-        categoria: string;
+        cantidad: number;
     }[];
+    estado?: 'Recibida' | 'Pendiente' | 'Cancelada';
 }

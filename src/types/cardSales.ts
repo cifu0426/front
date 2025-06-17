@@ -1,12 +1,13 @@
 export interface ISales {
     id: number;
-    fecha: string;
-    total: number;
-    productos: {
+    fecha?: string;
+    total?: number;
+    cliente?: string;
+    productos?: {
         id: number;
         nombre: string;
         precio: number;
-        stock: number;
-        categoria: string;
+        cantidad: number;
     }[];
+    estado?: 'Completada' | 'Pendiente' | 'Cancelada';
 }

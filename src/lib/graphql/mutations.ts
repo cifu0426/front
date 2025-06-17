@@ -36,7 +36,6 @@ export const INSERTAR_PRODUCTO = gql`
       id
       nombre
       precio
-      stock
       categoria
     }
   }
@@ -47,13 +46,6 @@ export const INSERTAR_VENTA = gql`
   mutation InsertarVenta($ventaInput: VentaInput!) {
     insertarVenta(ventaInput: $ventaInput) {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -63,13 +55,6 @@ export const INSERTAR_COMPRA = gql`
   mutation InsertarCompra($compraInput: CompraInput!) {
     insertarCompra(compraInput: $compraInput) {
       id
-      fecha
-      total
-      productos {
-        id
-        nombre
-        precio
-      }
     }
   }
 `;
@@ -106,7 +91,6 @@ export const UPDATE_PRODUCTO = gql`
       id
       nombre
       precio
-      stock
       categoria
     }
   }
@@ -116,8 +100,6 @@ export const UPDATE_VENTA = gql`
   mutation UpdateVenta($id: ID!, $ventaInput: VentaInput!) {
     updateVenta(id: $id, ventaInput: $ventaInput) {
       id
-      fecha
-      total
     }
   }
 `;
@@ -126,8 +108,6 @@ export const UPDATE_COMPRA = gql`
   mutation UpdateCompra($id: ID!, $compraInput: CompraInput!) {
     updateCompra(id: $id, compraInput: $compraInput) {
       id
-      fecha
-      total
     }
   }
 `;
@@ -138,7 +118,10 @@ export const UPDATE_USUARIO = gql`
       id
       nombreusuario
       contrasenia
-      rol
+      rol {
+        id
+        nombre
+      }
     }
   }
 `; 

@@ -1,23 +1,150 @@
 "use client";
 import React from 'react';
-import { IProduct } from '@/types';
+import { IPurchases } from '@/types';
 
 export type CardPurchaseProps = {
-	id: number;
-    fecha: string;
-    total: number;
-    productos: IProduct[];
+	purchase: IPurchases;
+	onEdit?: (id: number) => void;
+	onDelete?: (id: number) => void;
 }
 
-const CardPurchase: React.FC<CardPurchaseProps>  = ({ id, fecha, total, productos }) => {
+const CardPurchase: React.FC<CardPurchaseProps> = ({ purchase, onEdit, onDelete }) => {
+	const getEstadoColor = (estado: string) => {
+		switch (estado) {
+			case 'Recibida':
+				return 'bg-gradient-to-r from-green-500 to-green-600 text-white';
+			case 'Pendiente':
+				return 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white';
+			case 'Cancelada':
+				return 'bg-gradient-to-r from-red-500 to-red-600 text-white';
+			default:
+				return 'bg-gradient-to-r from-gray-500 to-gray-600 text-white';
+		}
+	};
+
+	const formatDate = (dateString: string) => {
+		return new Date(dateString).toLocaleDateString('es-ES', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric'
+		});
+	};
+
+	const formatCurrency = (amount: number) => {
+		return new Intl.NumberFormat('es-ES', {
+			style: 'currency',
+			currency: 'EUR'
+		}).format(amount);
+	};
+
 	return (
-		<div className="">
-			<div className="card-product grid grid-cols-5 items-center text-black font-semibold rounded-full px-4 py-2 shadow">
-				<p className="text-center">{id}</p>
-				<p className="text-center">{fecha}</p>
-				<p className="text-center">{total}</p>
-				<p className="text-center">{productos.length}</p>
-				<p className="text-center cursor-pointer">i</p>
+		<div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+			{/* Header con gradiente */}
+			<div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white">
+				<div className="flex justify-between items-start">
+					<div className="flex items-center space-x-3">
+						<div className="bg-white/20 rounded-full p-2">
+							<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+							</svg>
+						</div>
+						<div>
+							<h3 className="text-xl font-bold">Compra #{purchase.id}</h3>
+						</div>
+					</div>
+					<div className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg ${getEstadoColor(purchase.estado || 'Recibida')}`}>
+						{purchase.estado}
+					</div>
+				</div>
+			</div>
+
+			{/* Contenido principal */}
+			<div className="p-6">
+				{/* Proveedor */}
+				<div className="mb-6">
+					<div className="flex items-center space-x-3 bg-purple-50 rounded-lg p-4">
+						<div className="bg-purple-100 rounded-full p-2">
+							<svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+							</svg>
+						</div>
+						<div>
+							<p className="text-sm text-gray-500 font-medium">Proveedor</p>
+							<p className="text-lg font-semibold text-gray-900">{purchase.proveedor}</p>
+						</div>
+					</div>
+				</div>
+
+				{/* Productos */}
+				{purchase.productos && purchase.productos.length > 0 && (
+					<div className="mb-6">
+						<h4 className="text-sm font-bold text-gray-700 mb-3 flex items-center">
+							<svg className="w-4 h-4 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+							</svg>
+							Productos ({purchase.productos.length})
+						</h4>
+						<div className="space-y-3">
+							{purchase.productos.map((producto, index) => (
+								<div key={index} className="flex justify-between items-center bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3 border-l-4 border-orange-400">
+									<div className="flex-1">
+										<span className="font-semibold text-gray-900">{producto.nombre}</span>
+										<div className="flex items-center mt-1">
+											<span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+												{producto.cantidad} unidades
+											</span>
+											<span className="text-xs text-gray-500 ml-2">
+												{formatCurrency(producto.precio)} c/u
+											</span>
+										</div>
+									</div>
+									<div className="text-right">
+										<span className="font-bold text-lg text-purple-600">
+											{formatCurrency(producto.precio * producto.cantidad)}
+										</span>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Total y Acciones */}
+				<div className="border-t border-gray-200 pt-4">
+					<div className="flex justify-between items-center mb-4">
+						<div className="text-left">
+							<p className="text-sm text-gray-500 font-medium">Total de la Compra</p>
+							<p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+								{purchase.total ? formatCurrency(purchase.total) : 'N/A'}
+							</p>
+						</div>
+						
+						<div className="flex space-x-3">
+							{onEdit && (
+								<button
+									onClick={() => onEdit(purchase.id)}
+									className="flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+								>
+									<svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+									</svg>
+									Editar
+								</button>
+							)}
+							{onDelete && (
+								<button
+									onClick={() => onDelete(purchase.id)}
+									className="flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-md hover:shadow-lg"
+								>
+									<svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+									</svg>
+									Eliminar
+								</button>
+							)}
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	);
