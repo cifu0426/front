@@ -1,7 +1,6 @@
-"user client";
+"use client";
 import { Login } from "@/components/Login";
 import { Logo } from "@/components/Logo";
-import "./globals.css";
 
 export default function Home() {
   return (
