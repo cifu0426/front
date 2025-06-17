@@ -2,7 +2,6 @@
 import React from 'react';
 import styles from './CardSales.module.scss';
 import { IProduct } from '@/types';
-import { useState } from "react";
 
 export type CardSalesProps = {
 	id: number;
@@ -19,7 +18,7 @@ const CardSales: React.FC<CardSalesProps>  = ({id,fecha,total,productos}) => {
   				<p className="text-center">{fecha}</p>
   				<p className="text-center">{total}</p>
 				<p className="text-center">{productos.length}</p>
-				<p className="text-center cursor-pointer" onClick={() => setOpen(true)}>i</p>
+				<p className="text-center cursor-pointer">i</p>
 			</div>
  		</div>
 	);

@@ -2,8 +2,7 @@
 import React from 'react';
 import styles from './ReportMenu.module.scss';
 
-export type ReportMenuProps = {
-}
+export type ReportMenuProps = object
 
 const ReportMenu: React.FC<ReportMenuProps>  = ({}) => {
 	return (

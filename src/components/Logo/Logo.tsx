@@ -1,9 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from 'react';
 
-export type LogoProps = {
-	// types...
-}
+export type LogoProps = object
 
 const Logo: React.FC<LogoProps>  = ({}) => {
 	return (
