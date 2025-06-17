@@ -3,22 +3,28 @@
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
-import ApolloProviderWrapper from "@/components/ApolloProvider";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const hideLayoutRoutes = ["/", "/register"];
   const shouldShowLayout = !hideLayoutRoutes.includes(pathname);
 
+  if (!shouldShowLayout) return <>{children}</>;
+
   return (
-    <ApolloProviderWrapper>
-      <div className="flex bg-sky-200 min-h-screen">
-        {shouldShowLayout && <Sidebar />}
-        <div className="flex-1">
-          {shouldShowLayout && <Navbar />}
-          <main className="p-4">{children}</main>
-        </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar en la parte superior */}
+      <Navbar />
+
+      <div className="flex flex-1 bg-sky-200">
+        {/* Sidebar fijo a la izquierda */}
+        <Sidebar />
+
+        {/* Contenido principal */}
+        <main className="flex-1 p-4">
+          {children}
+        </main>
       </div>
-    </ApolloProviderWrapper>
+    </div>
   );
 }

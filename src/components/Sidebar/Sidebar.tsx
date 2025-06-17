@@ -22,9 +22,7 @@ export default function Sidebar() {
           <li className="cursor-pointer hover:underline" onClick={() => router.push("/user-management")}>User management</li>
           <li className="cursor-pointer hover:underline" onClick={() => router.push("/purchase-register")}>Purchase Register</li>
           <li className="cursor-pointer hover:underline" onClick={() => router.push("/sales-register")}>Sales register</li>
-          <li className="cursor-pointer hover:underline" onClick={() => router.push("/special-sales")}>Special sales</li>
           <li className="cursor-pointer hover:underline" onClick={() => router.push("/sales-report")}>Sales report</li>
-          <li className="cursor-pointer hover:underline" onClick={() => router.push("/add-product")}>Add new product</li>
           <li className="cursor-pointer hover:underline" onClick={() => router.push("/all-products")}>All products</li>
         </ul>
       )}

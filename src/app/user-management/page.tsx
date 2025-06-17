@@ -1,66 +1,43 @@
-// components/UserManagement.tsx
-"use client"
+// app/admin/users/page.tsx
+"use client";
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react";
+import CardSetUser from "@/components/CardSetUser/CardSetUser";
+import { IUser } from "@/types";
 
-export default function UserManagement() {
-  const [users, setUsers] = useState([])
+export default function UsersPage() {
+	const [users, setUsers] = useState<IUser[]>([]);
 
-  useEffect(() => {
-    // Simulamos una carga de usuarios (esto se puede conectar a una API luego)
-    const mockUsers = Array.from({ length: 7 }, (_, i) => ({
-      id: i + 1,
-      name: `Name ${i + 1}`,
-      email: `user${i + 1}@mail.com`,
-      role: "Admin"
-    }))
-    setUsers(mockUsers)
-  }, [])
+	useEffect(() => {
+		fetch("https://backend-petstore-2.onrender.com/graphql", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				query: `
+          query {
+            getUsuarios {
+              id
+              nombreusuario
+              rol
+            }
+          }
+        `,
+			}),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				setUsers(data.data.getUsuarios);
+			});
+	}, []);
 
-  const handleDelete = (id: number) => {
-    setUsers(prev => prev.filter(user => user.id !== id))
-  }
-
-  return (
-    <div className="flex flex-col items-center bg-sky-200 min-h-screen pt-10">
-      <h1 className="text-3xl font-bold text-blue-900 mb-6 flex items-center">
-        <span className="text-4xl mr-2">🐾</span> SYSTEM USERS
-      </h1>
-
-      <div className="bg-sky-100 rounded-xl p-6 shadow-md border border-blue-500 w-full max-w-4xl">
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="text-left text-blue-900 bg-blue-100">
-              <th className="py-2 px-3">Name</th>
-              <th className="py-2 px-3">Email</th>
-              <th className="py-2 px-3">Role</th>
-              <th className="py-2 px-3">Edit</th>
-              <th className="py-2 px-3">Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(user => (
-              <tr
-                key={user.id}
-                className="border-t border-blue-300 hover:bg-blue-50 transition-colors text-blue-900"
-              >
-                <td className="py-2 px-3">{user.name}</td>
-                <td className="py-2 px-3">{user.email}</td>
-                <td className="py-2 px-3">{user.role}</td>
-                <td className="py-2 px-3 cursor-pointer text-blue-700 hover:underline">
-                  Editar
-                </td>
-                <td
-                  className="py-2 px-3 cursor-pointer text-red-600 hover:underline"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Eliminar
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
+	return (
+		<div className="p-6">
+			<h1 className="text-3xl font-bold text-sky-900 flex items-center gap-2 mb-6">
+				<span>🐾</span> SYSTEM USERS
+			</h1>
+			<CardSetUser users={users} />
+		</div>
+	);
 }
