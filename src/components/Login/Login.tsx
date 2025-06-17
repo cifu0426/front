@@ -1,22 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
-  const router = useRouter(); // Hook de navegación
-  const [formData, setFormData] = useState({ username: "", password: "" }); // Estado del formulario
+  const { login, loading } = useAuth();
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target; // Desestructura el nombre y valor del input
-    setFormData((prev) => ({ ...prev, [name]: value })); // Actualiza el estado
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Limpiar error cuando el usuario empiece a escribir
+    if (error) setError("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Evita el comportamiento por defecto del formulario
-    console.log("Login attempt:", formData); // Simula login
-    router.push("/dashboard"); // Redirige al dashboard
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    // Validación básica
+    if (!formData.username.trim() || !formData.password.trim()) {
+      setError("Por favor, completa todos los campos");
+      return;
+    }
+
+    try {
+      const result = await login({
+        nombreusuario: formData.username,
+        contrasenia: formData.password,
+      });
+
+      if (!result.success) {
+        setError(result.error || "Error en el login");
+      }
+      // Si es exitoso, el hook se encarga de la redirección
+    } catch (err) {
+      setError("Error inesperado. Intenta de nuevo.");
+      console.error("Error en login:", err);
+    }
   };
 
   return (
@@ -26,6 +49,13 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-blue-900 mb-8">LOG IN TO YOUR ACCOUNT</h2>
 
         <form onSubmit={handleSubmit}>
+          {/* Mostrar errores */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+              {error}
+            </div>
+          )}
+
           {/* Campo de Username */}
           <div className="mb-4">
             <label htmlFor="username" className="block text-blue-900 mb-2">
@@ -38,6 +68,7 @@ export default function Login() {
               value={formData.username}
               onChange={handleChange}
               className="w-full p-3 bg-sky-100 rounded-md text-black"
+              disabled={loading}
               required
             />
           </div>
@@ -54,6 +85,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               className="w-full p-3 bg-sky-100 rounded-md text-black"
+              disabled={loading}
               required
             />
           </div>
@@ -62,9 +94,14 @@ export default function Login() {
           <div className="flex justify-center mb-6">
             <button
               type="submit"
-              className="bg-yellow-300 hover:bg-yellow-400 text-blue-900 font-medium py-2 px-8 rounded-md"
+              disabled={loading}
+              className={`font-medium py-2 px-8 rounded-md transition-colors ${
+                loading
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-yellow-300 hover:bg-yellow-400 text-blue-900"
+              }`}
             >
-              Log in
+              {loading ? "Iniciando sesión..." : "Log in"}
             </button>
           </div>
 

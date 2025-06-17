@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
+import ApolloProviderWrapper from "@/components/ApolloProvider";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -10,12 +11,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const shouldShowLayout = !hideLayoutRoutes.includes(pathname);
 
   return (
-    <div className="flex bg-sky-200 min-h-screen">
-      {shouldShowLayout && <Sidebar />}
-      <div className="flex-1">
-        {shouldShowLayout && <Navbar />}
-        <main className="p-4">{children}</main>
+    <ApolloProviderWrapper>
+      <div className="flex bg-sky-200 min-h-screen">
+        {shouldShowLayout && <Sidebar />}
+        <div className="flex-1">
+          {shouldShowLayout && <Navbar />}
+          <main className="p-4">{children}</main>
+        </div>
       </div>
-    </div>
+    </ApolloProviderWrapper>
   );
 }

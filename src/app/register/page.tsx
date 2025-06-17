@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useRegister } from "@/hooks/useRegister"
 
 export default function RegisterPage() {
   const router = useRouter() // Para redireccionar después del registro
+  const { register, loading, error } = useRegister();
 
   // Estado para los campos del formulario
   const [formData, setFormData] = useState({
@@ -25,27 +27,56 @@ export default function RegisterPage() {
   }
 
   // Función para manejar el envío del formulario
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-  if (formData.password !== formData.confirmPassword) {
-    alert("Passwords do not match")
-    return
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match")
+      return
+    }
+
+    // Validar campos requeridos
+    if (!formData.username.trim() || !formData.password.trim()) {
+      alert("Username and password are required")
+      return
+    }
+
+    console.log('=== INICIANDO REGISTRO ===');
+    console.log('Username:', formData.username);
+    console.log('Password length:', formData.password.length);
+
+    try {
+      const result = await register({
+        nombreusuario: formData.username.trim(),
+        contrasenia: formData.password,
+        rol: 1 // 1 = USER, 2 = ADMIN
+      });
+
+      console.log('=== RESULTADO DEL REGISTRO ===');
+      console.log('Success:', result.success);
+      console.log('Result:', result);
+
+      if (result.success) {
+        alert("¡Cuenta creada exitosamente en la base de datos! Ahora puedes hacer login.");
+        // Limpiar formulario
+        setFormData({
+          name: "",
+          username: "",
+          password: "",
+          confirmPassword: "",
+          address: "",
+          phone: "",
+          email: "",
+          id: ""
+        });
+      } else {
+        alert(`Registration failed: ${result.error}`);
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      alert("Unexpected error during registration");
+    }
   }
-
-  // Guardar toda la información en el localStorage
-  localStorage.setItem("name", formData.name)
-  localStorage.setItem("username", formData.username)
-  localStorage.setItem("password", formData.password)
-  localStorage.setItem("address", formData.address)
-  localStorage.setItem("phone", formData.phone)
-  localStorage.setItem("email", formData.email)
-  localStorage.setItem("id", formData.id)
-
-  alert("Account created successfully")
-
-  router.push("/") // Redirige al login
-}
 
   return (
     <div className="min-h-screen bg-sky-200 flex items-center justify-center">
@@ -54,6 +85,13 @@ const handleSubmit = (e: React.FormEvent) => {
         <h1 className="text-2xl font-bold text-blue-900 text-center mb-8">CREATE A NEW ACCOUNT</h1>
 
         <form onSubmit={handleSubmit}>
+          {/* Mostrar errores */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+              {error}
+            </div>
+          )}
+          
           <div className="grid grid-cols-2 gap-6">
             {/* Campos del formulario */}
             <div>
@@ -95,8 +133,12 @@ const handleSubmit = (e: React.FormEvent) => {
             <button type="button" onClick={() => router.push("/")} className="bg-gray-200 hover:bg-gray-300 text-blue-900 font-medium py-2 px-6 rounded-md cursor-pointer">
               Back to Login
             </button>
-            <button type="submit" className="bg-yellow-300 hover:bg-yellow-400 text-blue-900 font-medium py-2 px-6 rounded-md cursor-pointer">
-              Register
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="bg-yellow-300 hover:bg-yellow-400 text-blue-900 font-medium py-2 px-6 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Creating Account..." : "Register"}
             </button>
           </div>
         </form>
