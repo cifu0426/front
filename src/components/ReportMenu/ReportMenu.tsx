@@ -9,13 +9,13 @@ const ReportMenu: React.FC<ReportMenuProps>  = ({}) => {
 		<div className={styles.reportmenu}>
 			<div className="container text-center mx-auto grid grid-cols-4 gap-4">
 				<div className="bg-sky-100 p-4 rounded shadow">
-					<h2 className="text-xl font-bold">Today's sales report</h2>
+					<h2 className="text-xl font-bold">Today&apos;s sales report</h2>
 				</div>
 				<div className="bg-sky-100 p-4 rounded shadow">
-					<h2 className="text-xl font-bold">Last week's sales report</h2>
+					<h2 className="text-xl font-bold">Last week&apos;s sales report</h2>
 				</div>
 				<div className="bg-sky-100 p-4 rounded shadow">
-					<h2 className="text-xl font-bold">Last month's sales report</h2>
+					<h2 className="text-xl font-bold">Last month&apos;s sales report</h2>
 				</div>
 				<div className="bg-sky-100 p-4 rounded shadow">
 					<h2 className="text-xl font-bold">Best-selling products</h2>
