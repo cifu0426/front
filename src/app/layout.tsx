@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ClientLayout } from "@/components/ClientLayout"; // Importa el layout del cliente
+import { ApolloProvider } from "@/components/Providers/ApolloProvider";
 
 export const metadata = {
   title: "Pet Manager",
@@ -10,7 +11,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <ClientLayout>{children}</ClientLayout>
+        <ApolloProvider>
+          <ClientLayout>{children}</ClientLayout>
+        </ApolloProvider>
       </body>
     </html>
   );

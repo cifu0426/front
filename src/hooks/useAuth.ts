@@ -55,10 +55,9 @@ export const useAuth = () => {
       });
 
       console.log('Respuesta completa del servidor:', data);
-      console.log('loginUsuario data:', data?.loginUsuario);
-
-      // El token puede venir directamente como string o en un objeto
-      const token = data?.loginUsuario?.token || data?.loginUsuario;
+      
+      // El token viene directamente como string
+      const token = data?.loginUsuario;
       
       console.log('Token extraído:', token);
       console.log('Tipo de token:', typeof token);
